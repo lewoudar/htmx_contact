@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <h1>{{ contact.firstname }} {{ contact.lastname }}</h1>
+
+    <div>
+        <div>Phone: {{ contact.phone }}</div>
+        <div>Email: {{ contact.email }}</div>
+    </div>
+
+    <p>
+        <a href="/contacts/{{ contact.id }}/edit">Edit</a>
+        <a href="{% url 'contact:index' %}">Back</a>
+    </p>
+{% endblock %}

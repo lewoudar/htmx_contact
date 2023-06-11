@@ -1,0 +1,39 @@
+[tool.poetry]
+name = "htmx-contact"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "htmx_contact"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^4.2.1"
+django-htmx = "^1.14.0"
+
+
+[tool.poetry.group.lint.dependencies]
+ruff = "^0.0.270"
+blue = "^0.9.1"
+
+
+[tool.poetry.group.dev.dependencies]
+django-stubs = "^4.2.0"
+
+[tool.blue]
+line-length=120
+
+[tool.ruff]
+line-length = 120
+select = [
+  "E",   # pycodestyle
+  "F",   # pyflakes
+  "UP",  # pyupgrade
+  "I",   # isort
+  "B", # flake8-bugbear
+  "DJ" # flake8-django
+]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

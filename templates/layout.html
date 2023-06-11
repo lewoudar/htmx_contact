@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contact App</title>
+    <link rel="stylesheet" href="{% static 'css/missing.min.css' %}">
+    <script src="{% static 'js/htmx.min.js' %}"></script>
+</head>
+<body data-hx-boost="true">
+<header>
+    <h1>Contact application</h1>
+</header>
+{% if messages %}
+    {% for message in messages %}
+        <div class="flash">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+{% block content %}
+{% endblock %}
+</body>
+</html>
