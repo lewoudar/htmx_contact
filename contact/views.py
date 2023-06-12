@@ -87,3 +87,11 @@ class ContactEdit(View):
         else:
             context = {'form': form, 'contact': contact}
             return render(request, 'contact/edit.html', context)
+
+
+def check_email(request):
+    email = request.GET.get('email', '')
+    # we make a partial form validation only to check email
+    form = ContactForm({'email': email})
+    return render(request, 'contact/email_errors.html', {'errors': form.errors.get('email', [])})
+

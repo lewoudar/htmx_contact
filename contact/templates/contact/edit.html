@@ -8,7 +8,17 @@
             {% for field in form %}
                 <p>
                     <label for="{{ field.id_for_label }}">{{ field.label|capfirst }}:</label>
-                    {{ field }}
+                    {% if field.name == 'email' %}
+                        <input name="email" id="{{ field.id_for_label }}" type="email" placeholder="email"
+                               data-hx-get="{% url 'contact:check-email' %}"
+                               data-hx-target="next .error"
+                               data-hx-trigger="change, keyup delay:200ms changed"
+                               data-hx-swap="outerHTML"
+                               value="{{ field.value }}">
+                        <span class="error"></span>
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
                     {% for error in field.errors %}
                         <span class="error">{{ error|escape }}</span>
                     {% endfor %}
