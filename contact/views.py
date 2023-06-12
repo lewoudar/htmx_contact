@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
@@ -27,7 +28,11 @@ def index(request):
         contacts = Contact.objects.filter(*predicates)
     else:
         contacts = Contact.objects.all()
-    return render(request, 'contact/index.html', {'contacts': contacts})
+
+    paginator = Paginator(contacts, 10)
+    page = int(request.GET.get('page', '1'))
+    page_obj = paginator.get_page(page)
+    return render(request, 'contact/index.html', {'page_obj': page_obj})
 
 
 class ContactCreate(View):
@@ -52,8 +57,7 @@ class ContactCreate(View):
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class ReadEditDeleteContact(View):
-
+class ReadDeleteContact(View):
     @staticmethod
     def get(request, contact_id: int):
         contact = get_object_or_404(Contact, id=contact_id)
@@ -94,4 +98,3 @@ def check_email(request):
     # we make a partial form validation only to check email
     form = ContactForm({'email': email})
     return render(request, 'contact/email_errors.html', {'errors': form.errors.get('email', [])})
-

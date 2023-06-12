@@ -17,7 +17,7 @@
         </tr>
         </thead>
         <tbody>
-        {% for contact in contacts %}
+        {% for contact in page_obj %}
             <tr>
                 <td>{{ contact.firstname }}</td>
                 <td>{{ contact.lastname }}</td>
@@ -29,6 +29,22 @@
         {% endfor %}
         </tbody>
     </table>
+
+    <div>
+        <span>
+            {% if page_obj.has_previous %}
+                <a href="{% url 'contact:index' %}?page=1">&laquo; first</a>
+                <a href="{% url 'contact:index' %}?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
+
+            {% if page_obj.has_next %}
+                <a href="{% url 'contact:index' %}?page={{ page_obj.next_page_number }}">next</a>
+                <a href="{% url 'contact:index' %}?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
 
     <p>
         <a href="{% url 'contact:create' %}">Add Contact</a>
