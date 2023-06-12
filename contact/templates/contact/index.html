@@ -36,6 +36,16 @@
                             data-hx-get="{% url 'contact:index' %}?page={{ page_obj.next_page_number }}">
                         Load More
                     </button>
+                    {% comment %}
+                    For infinite scrolling behavior
+                    <span data-hx-target="closest tr"
+                          data-hx-trigger="revealed"
+                          data-hx-swap="outerHTML"
+                          data-hx-select="tbody > tr"
+                          data-hx-get="{% url 'contact:index' %}?page={{ page_obj.next_page_number }}">
+                        Load More...
+                    </span>
+                    {% endcomment %}
                 </td>
             </tr>
         {% endif %}
