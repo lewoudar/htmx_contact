@@ -4,9 +4,7 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect, HttpRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from django.utils.decorators import method_decorator
 from django.views import View
-from django.views.decorators.csrf import csrf_exempt
 from django_htmx.middleware import HtmxDetails
 
 from .forms import ContactForm
@@ -66,7 +64,6 @@ class ContactCreate(View):
             return render(request, 'contact/new.html', {'form': form})
 
 
-@method_decorator(csrf_exempt, name='dispatch')
 class ReadDeleteContact(View):
     @staticmethod
     def get(request, contact_id: int):

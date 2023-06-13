@@ -31,7 +31,8 @@
     <button data-hx-delete="{% url 'contact:show-delete' contact.id %}"
             data-hx-target="body"
             data-hx-push-url="true"
-            data-hx-confirm="Are you sure you want to delete this contact?">
+            data-hx-confirm="Are you sure you want to delete this contact?"
+            data-hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
         Delete Contact
     </button>
 
