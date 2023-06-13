@@ -38,7 +38,7 @@ def index(request: HtmxHttpRequest):
         contacts = Contact.objects.all()
 
     paginator = Paginator(contacts, 10)
-    page = int(request.GET.get('page', '1'))
+    page = request.GET.get('page', '1')
     page_obj = paginator.get_page(page)
     return render(request, template, {'page_obj': page_obj})
 
