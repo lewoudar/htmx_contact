@@ -76,11 +76,14 @@ class ReadDeleteContact(View):
         return render(request, 'contact/show.html', {'contact': contact})
 
     @staticmethod
-    def delete(request, contact_id: int):
+    def delete(request: HtmxHttpRequest, contact_id: int):
         contact = get_object_or_404(Contact, id=contact_id)
         contact.delete()
-        messages.success(request, 'Deleted Contact!')
-        return HttpSeeOtherRedirect(reverse('contact:index'))
+        if request.htmx.trigger == 'delete-btn':
+            messages.success(request, 'Deleted Contact!')
+            return HttpSeeOtherRedirect(reverse('contact:index'))
+        else:
+            return HttpResponse()
 
 
 class ContactEdit(View):
