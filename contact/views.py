@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import HttpResponseRedirect, HttpRequest
+from django.http import HttpResponseRedirect, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views import View
@@ -41,6 +41,11 @@ def index(request: HtmxHttpRequest):
     page = int(request.GET.get('page', '1'))
     page_obj = paginator.get_page(page)
     return render(request, template, {'page_obj': page_obj})
+
+
+def contact_count(request):
+    count = Contact.objects.count()
+    return HttpResponse(f'({count} total Contacts)')
 
 
 class ContactCreate(View):

@@ -9,4 +9,5 @@ urlpatterns = [
     path('<int:contact_id>/', views.ReadDeleteContact.as_view(), name='show-delete'),
     path('<int:contact_id>/edit/', views.ContactEdit.as_view(), name='edit'),
     path('email/', views.check_email, name='check-email'),
+    path('count/', views.contact_count, name='count')
 ]

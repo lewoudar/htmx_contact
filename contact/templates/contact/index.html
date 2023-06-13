@@ -22,12 +22,15 @@
         </tr>
         </thead>
         <tbody>
-            {% include 'contact/rows.html' %}
+        {% include 'contact/rows.html' %}
         </tbody>
     </table>
 
     <p>
         <a href="{% url 'contact:create' %}">Add Contact</a>
+        <span data-hx-get="{% url 'contact:count' %}" data-hx-trigger="load">
+            <span class="htmx-indicator">Counting contacts...</span>
+        </span>
     </p>
 {% endblock %}
 
