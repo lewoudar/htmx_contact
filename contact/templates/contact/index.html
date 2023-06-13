@@ -3,9 +3,14 @@
 {% block content %}
     <form action="{% url 'contact:index' %}" method="get" class="tool-bar">
         <label for="search">Search Term</label>
-        <input id="search" type="search" name="q" value="{{ request.GET.q }}"/>
+        <input id="search" type="search" name="q" value="{{ request.GET.q }}" data-hx-get="{% url 'contact:index' %}"
+               data-hx-trigger="search, keyup delay:200ms changed"
+               data-hx-target="tbody"
+               data-hx-push-url="true"
+               data-hx-indicator="#search-indicator"/>
         <input type="submit" value="Search"/>
     </form>
+    <span id="search-indicator" class="htmx-indicator">Searching...</span>
     <table>
         <thead>
         <tr>
@@ -17,38 +22,7 @@
         </tr>
         </thead>
         <tbody>
-        {% for contact in page_obj %}
-            <tr>
-                <td>{{ contact.firstname }}</td>
-                <td>{{ contact.lastname }}</td>
-                <td>{{ contact.phone }}</td>
-                <td>{{ contact.email }}</td>
-                <td><a href="/contact/{{ contact.id }}/edit">Edit</a>
-                    <a href="{% url 'contact:show-delete' contact.id %}">View</a></td>
-            </tr>
-        {% endfor %}
-        {% if page_obj.has_next %}
-            <tr>
-                <td colspan="5" style="text-align: center">
-                    <button data-hx-target="closest tr"
-                            data-hx-swap="outerHTML"
-                            data-hx-select="tbody > tr"
-                            data-hx-get="{% url 'contact:index' %}?page={{ page_obj.next_page_number }}">
-                        Load More
-                    </button>
-                    {% comment %}
-                    For infinite scrolling behavior
-                    <span data-hx-target="closest tr"
-                          data-hx-trigger="revealed"
-                          data-hx-swap="outerHTML"
-                          data-hx-select="tbody > tr"
-                          data-hx-get="{% url 'contact:index' %}?page={{ page_obj.next_page_number }}">
-                        Load More...
-                    </span>
-                    {% endcomment %}
-                </td>
-            </tr>
-        {% endif %}
+            {% include 'contact/rows.html' %}
         </tbody>
     </table>
 

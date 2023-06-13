@@ -1,12 +1,13 @@
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
+from django_htmx.middleware import HtmxDetails
 
 from .forms import ContactForm
 from .models import Contact
@@ -16,8 +17,15 @@ class HttpSeeOtherRedirect(HttpResponseRedirect):
     status_code = 303
 
 
-def index(request):
+# Typing pattern recommended by django-stubs:
+# https://github.com/typeddjango/django-stubs#how-can-i-create-a-httprequest-thats-guaranteed-to-have-an-authenticated-user
+class HtmxHttpRequest(HttpRequest):
+    htmx: HtmxDetails
+
+
+def index(request: HtmxHttpRequest):
     search = request.GET.get('q')
+    template = 'contact/index.html'
     if search is not None:
         predicates = [
             Q(firstname__icontains=search)
@@ -26,13 +34,15 @@ def index(request):
             | Q(phone__icontains=search)
         ]
         contacts = Contact.objects.filter(*predicates)
+        if request.htmx.trigger == 'search':
+            template = 'contact/rows.html'
     else:
         contacts = Contact.objects.all()
 
     paginator = Paginator(contacts, 10)
     page = int(request.GET.get('page', '1'))
     page_obj = paginator.get_page(page)
-    return render(request, 'contact/index.html', {'page_obj': page_obj})
+    return render(request, template, {'page_obj': page_obj})
 
 
 class ContactCreate(View):

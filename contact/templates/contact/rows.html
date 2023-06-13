@@ -1,0 +1,32 @@
+{% for contact in page_obj %}
+    <tr>
+        <td>{{ contact.firstname }}</td>
+        <td>{{ contact.lastname }}</td>
+        <td>{{ contact.phone }}</td>
+        <td>{{ contact.email }}</td>
+        <td><a href="/contact/{{ contact.id }}/edit">Edit</a>
+            <a href="{% url 'contact:show-delete' contact.id %}">View</a></td>
+    </tr>
+{% endfor %}
+{% if page_obj.has_next %}
+    <tr>
+        <td colspan="5" style="text-align: center">
+            <button data-hx-target="closest tr"
+                    data-hx-swap="outerHTML"
+                    data-hx-select="tbody > tr"
+                    data-hx-get="{% url 'contact:index' %}?page={{ page_obj.next_page_number }}">
+                Load More
+            </button>
+            {% comment %}
+            For infinite scrolling behavior
+            <span data-hx-target="closest tr"
+                  data-hx-trigger="revealed"
+                  data-hx-swap="outerHTML"
+                  data-hx-select="tbody > tr"
+                  data-hx-get="{% url 'contact:index' %}?page={{ page_obj.next_page_number }}">
+                Load More...
+            </span>
+            {% endcomment %}
+        </td>
+    </tr>
+{% endif %}
