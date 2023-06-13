@@ -1,5 +1,10 @@
 {% for contact in page_obj %}
     <tr>
+        <td>
+            <label>
+                <input type="checkbox" name="selected_contact_ids" value="{{ contact.id }}">
+            </label>
+        </td>
         <td>{{ contact.firstname }}</td>
         <td>{{ contact.lastname }}</td>
         <td>{{ contact.phone }}</td>
@@ -12,7 +17,7 @@
                data-hx-swap="outerHTML swap:1s"
                data-hx-confirm="Are you sure you want to delete this contact?"
                data-hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
-                Delete Contact
+                Delete
             </a>
         </td>
     </tr>

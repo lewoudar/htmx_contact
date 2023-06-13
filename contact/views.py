@@ -1,7 +1,8 @@
 from django.contrib import messages
-from django.core.paginator import Paginator
-from django.db.models import Q
-from django.http import HttpResponseRedirect, HttpRequest, HttpResponse
+from django.core.paginator import Paginator, Page
+from django.db import transaction
+from django.db.models import Q, QuerySet
+from django.http import HttpResponseRedirect, HttpRequest, HttpResponse, QueryDict
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views import View
@@ -21,26 +22,43 @@ class HtmxHttpRequest(HttpRequest):
     htmx: HtmxDetails
 
 
-def index(request: HtmxHttpRequest):
-    search = request.GET.get('q')
-    template = 'contact/index.html'
-    if search is not None:
-        predicates = [
-            Q(firstname__icontains=search)
-            | Q(lastname__icontains=search)
-            | Q(email__icontains=search)
-            | Q(phone__icontains=search)
-        ]
-        contacts = Contact.objects.filter(*predicates)
-        if request.htmx.trigger == 'search':
-            template = 'contact/rows.html'
-    else:
-        contacts = Contact.objects.all()
+class ContactHome(View):
 
-    paginator = Paginator(contacts, 10)
-    page = request.GET.get('page', '1')
-    page_obj = paginator.get_page(page)
-    return render(request, template, {'page_obj': page_obj})
+    @staticmethod
+    def _get_page_obj(contacts: QuerySet, page: str = '1') -> Page:
+        paginator = Paginator(contacts, 10)
+        return paginator.get_page(page)
+
+    def get(self, request: HtmxHttpRequest):
+        search = request.GET.get('q')
+        template = 'contact/index.html'
+        if search is not None:
+            predicates = [
+                Q(firstname__icontains=search)
+                | Q(lastname__icontains=search)
+                | Q(email__icontains=search)
+                | Q(phone__icontains=search)
+            ]
+            contacts = Contact.objects.filter(*predicates)
+            if request.htmx.trigger == 'search':
+                template = 'contact/rows.html'
+        else:
+            contacts = Contact.objects.all()
+
+        page = request.GET.get('page', '1')
+        page_obj = self._get_page_obj(contacts, page)
+        return render(request, template, {'page_obj': page_obj})
+
+    @transaction.atomic
+    def delete(self, request: HtmxHttpRequest):
+        data = QueryDict(request.body)
+        for contact_id in data.getlist('selected_contact_ids'):
+            contact = Contact.objects.get(id=int(contact_id))
+            contact.delete()
+
+        messages.success(request, 'Deleted contacts!')
+        page_obj = self._get_page_obj(Contact.objects.all())
+        return render(request, 'contact/index.html', {'page_obj': page_obj})
 
 
 def contact_count(request):

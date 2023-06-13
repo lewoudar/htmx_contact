@@ -4,7 +4,7 @@ from . import views
 
 app_name = 'contact'
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', views.ContactHome.as_view(), name='index'),
     path('new/', views.ContactCreate.as_view(), name='create'),
     path('<int:contact_id>/', views.ReadDeleteContact.as_view(), name='show-delete'),
     path('<int:contact_id>/edit/', views.ContactEdit.as_view(), name='edit'),

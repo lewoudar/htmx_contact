@@ -11,20 +11,28 @@
         <input type="submit" value="Search"/>
     </form>
     <span id="search-indicator" class="htmx-indicator">Searching...</span>
-    <table>
-        <thead>
-        <tr>
-            <th>First</th>
-            <th>Last</th>
-            <th>Phone</th>
-            <th>Email</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        {% include 'contact/rows.html' %}
-        </tbody>
-    </table>
+    <form>
+        <table>
+            <thead>
+            <tr>
+                <th>First</th>
+                <th>Last</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% include 'contact/rows.html' %}
+            </tbody>
+        </table>
+        <button data-hx-delete="{% url 'contact:index' %}"
+                data-hx-confirm="Are you sure you want to delete these contacts?"
+                data-hx-target="body"
+                data-hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+            Delete Selected Contacts
+        </button>
+    </form>
 
     <p>
         <a href="{% url 'contact:create' %}">Add Contact</a>
