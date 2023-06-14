@@ -1,4 +1,10 @@
 {% extends 'layout.html' %}
+{# This block is useful for the email validated route #}
+{% block email-errors %}
+    {% for error in errors %}
+        <span class="error">{{ error }}</span>
+    {% endfor %}
+{% endblock %}
 
 {% block content %}
     <form action="{% url 'contact:edit' contact.id %}" method="post">

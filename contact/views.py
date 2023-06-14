@@ -24,11 +24,11 @@ class HtmxHttpRequest(HttpRequest):
 
 
 def partial_render(
-    template_name: str,
-    block_name: str,
-    context: dict | None = None,
-    request: HtmxHttpRequest | None = None,
-    status: int = 200,
+        template_name: str,
+        block_name: str,
+        context: dict | None = None,
+        request: HtmxHttpRequest | None = None,
+        status: int = 200,
 ) -> HttpResponse:
     data = render_block_to_string(template_name, block_name, context, request)
     return HttpResponse(data, status=status)
@@ -140,4 +140,4 @@ def check_email(request):
     email = request.GET.get('email', '')
     # we make a partial form validation only to check email
     form = ContactForm({'email': email})
-    return render(request, 'contact/email_errors.html', {'errors': form.errors.get('email', [])})
+    return partial_render('contact/edit.html', 'email-errors', {'errors': form.errors.get('email', [])})
