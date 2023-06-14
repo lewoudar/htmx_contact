@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views import View
 from django_htmx.middleware import HtmxDetails
+from render_block import render_block_to_string
 
 from .forms import ContactForm
 from .models import Contact
@@ -22,8 +23,18 @@ class HtmxHttpRequest(HttpRequest):
     htmx: HtmxDetails
 
 
-class ContactHome(View):
+def partial_render(
+    template_name: str,
+    block_name: str,
+    context: dict | None = None,
+    request: HtmxHttpRequest | None = None,
+    status: int = 200,
+) -> HttpResponse:
+    data = render_block_to_string(template_name, block_name, context, request)
+    return HttpResponse(data, status=status)
 
+
+class ContactHome(View):
     @staticmethod
     def _get_page_obj(contacts: QuerySet, page: str = '1') -> Page:
         paginator = Paginator(contacts, 10)
@@ -31,7 +42,7 @@ class ContactHome(View):
 
     def get(self, request: HtmxHttpRequest):
         search = request.GET.get('q')
-        template = 'contact/index.html'
+        page = request.GET.get('page', '1')
         if search is not None:
             predicates = [
                 Q(firstname__icontains=search)
@@ -41,13 +52,12 @@ class ContactHome(View):
             ]
             contacts = Contact.objects.filter(*predicates)
             if request.htmx.trigger == 'search':
-                template = 'contact/rows.html'
+                page_obj = self._get_page_obj(contacts, page)
+                return partial_render('contact/index.html', 'table-rows', {'page_obj': page_obj})
         else:
             contacts = Contact.objects.all()
-
-        page = request.GET.get('page', '1')
         page_obj = self._get_page_obj(contacts, page)
-        return render(request, template, {'page_obj': page_obj})
+        return render(request, 'contact/index.html', {'page_obj': page_obj})
 
     @transaction.atomic
     def delete(self, request: HtmxHttpRequest):
