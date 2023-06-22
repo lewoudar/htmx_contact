@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator, Page
 from django.db import transaction
 from django.db.models import Q, QuerySet
-from django.http import HttpResponseRedirect, HttpRequest, HttpResponse, QueryDict
+from django.http import HttpResponseRedirect, HttpRequest, HttpResponse, QueryDict, FileResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views import View
@@ -10,6 +10,7 @@ from django_htmx.middleware import HtmxDetails
 from render_block import render_block_to_string
 
 from .forms import ContactForm
+from .helpers import get_archiver
 from .models import Contact
 
 
@@ -57,7 +58,7 @@ class ContactHome(View):
         else:
             contacts = Contact.objects.all()
         page_obj = self._get_page_obj(contacts, page)
-        return render(request, 'contact/index.html', {'page_obj': page_obj})
+        return render(request, 'contact/index.html', {'page_obj': page_obj, 'archiver': get_archiver()})
 
     @transaction.atomic
     def delete(self, request: HtmxHttpRequest):
@@ -141,3 +142,32 @@ def check_email(request):
     # we make a partial form validation only to check email
     form = ContactForm({'email': email})
     return partial_render('contact/edit.html', 'email-errors', {'errors': form.errors.get('email', [])})
+
+
+class ContactArchive(View):
+
+    @staticmethod
+    def get(request):
+        return render(request, 'contact/archive_ui.html', {'archiver': get_archiver()})
+
+    @staticmethod
+    def post(request):
+        archiver = get_archiver()
+        archiver.run()
+        return render(request, 'contact/archive_ui.html', {'archiver': archiver})
+
+    @staticmethod
+    def delete(request):
+        archiver = get_archiver()
+        archiver.reset()
+        return render(request, 'contact/archive_ui.html', {'archiver': archiver})
+
+
+def get_archive_file(request):
+    archiver = get_archiver()
+    return FileResponse(
+        archiver.archive_file.open(mode='rb'),
+        filename=archiver.archive_file.name,
+        as_attachment=True,
+        content_type='text/csv'
+    )

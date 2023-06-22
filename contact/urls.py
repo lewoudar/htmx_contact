@@ -10,4 +10,6 @@ urlpatterns = [
     path('<int:contact_id>/edit/', views.ContactEdit.as_view(), name='edit'),
     path('email/', views.check_email, name='check-email'),
     path('count/', views.contact_count, name='count'),
+    path('archive/', views.ContactArchive.as_view(), name='archive'),
+    path('archive/file/', views.get_archive_file, name='archive-file'),
 ]

@@ -1,0 +1,25 @@
+<div id="archive-ui" data-hx-target="this" data-hx-swap="outerHTML">
+    {% if archiver.status == 'waiting' %}
+        <button data-hx-post="{% url 'contact:archive' %}" data-hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+            Download Contact Archive
+        </button>
+    {% elif archiver.status == 'running' %}
+        <div data-hx-get="{% url 'contact:archive' %}" data-hx-trigger="load delay:500ms">
+            Creating Archive...
+            <div class="progress">
+                <div id="archive-progress" class="progress-bar" role="progressbar"
+                     aria-valuenow="{{ archiver.progress }}"
+                     style="width:{{ archiver.progress }}%"></div>
+            </div>
+        </div>
+    {% else %}
+        <a data-hx-boost="false" href="{% url 'contact:archive-file' %}">
+            Archive Ready! Click here to download. &downarrow;
+        </a>
+        <button data-hx-delete="{% url 'contact:archive' %}"
+                data-hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+            Clear Download
+        </button>
+    {% endif %}
+
+</div>
