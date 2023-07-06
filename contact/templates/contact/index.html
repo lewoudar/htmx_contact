@@ -17,7 +17,21 @@
     </form>
     <span id="search-indicator" class="htmx-indicator">Searching...</span>
     {% include 'contact/archive_ui.html' %}
-    <form>
+    <form x-data="{ selected: [] }">
+        <template x-if="selected.length > 0">
+            <div class="box info tool-bar">
+                <slot x-text="selected.length"></slot>
+                contacts selected
+
+                <button type="button" class="bad bg color border"
+                        @click="confirm(`Delete ${selected.length} contacts?`) &&
+                        htmx.ajax('DELETE', '/contact/', { source: $root, target: document.body })">
+                    Delete
+                </button>
+                <hr aria-orientation="vertical">
+                <button type="button" @click="selected = []">Cancel</button>
+            </div>
+        </template>
         <table>
             <thead>
             <tr>
@@ -34,7 +48,8 @@
                     <tr>
                         <td>
                             <label>
-                                <input type="checkbox" name="selected_contact_ids" value="{{ contact.id }}">
+                                <input type="checkbox" name="selected_contact_ids" value="{{ contact.id }}"
+                                       x-model="selected">
                             </label>
                         </td>
                         <td>{{ contact.firstname }}</td>
@@ -54,8 +69,7 @@
                                        data-hx-delete="{% url 'contact:show-delete' contact.id %}"
                                        data-hx-target="closest tr"
                                        data-hx-swap="outerHTML swap:1s"
-                                       data-hx-confirm="Are you sure you want to delete this contact?"
-                                       data-hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+                                       data-hx-confirm="Are you sure you want to delete this contact?">
                                         Delete
                                     </a>
                                 </div>
@@ -88,12 +102,6 @@
             {% endblock %}
             </tbody>
         </table>
-        <button data-hx-delete="{% url 'contact:index' %}"
-                data-hx-confirm="Are you sure you want to delete these contacts?"
-                data-hx-target="body"
-                data-hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
-            Delete Selected Contacts
-        </button>
     </form>
 
     <p>
