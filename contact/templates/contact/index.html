@@ -1,4 +1,9 @@
 {% extends 'layout.html' %}
+{% load static %}
+
+{% block script %}
+    <script src="{% static 'contact/js/overflow_menu.js' %}"></script>
+{% endblock %}
 
 {% block content %}
     <form action="{% url 'contact:index' %}" method="get" class="tool-bar">
@@ -37,15 +42,24 @@
                         <td>{{ contact.phone }}</td>
                         <td>{{ contact.email }}</td>
                         <td>
-                            <a href="/contact/{{ contact.id }}/edit">Edit</a>
-                            <a href="{% url 'contact:show-delete' contact.id %}">View</a>
-                            <a href="#" data-hx-delete="{% url 'contact:show-delete' contact.id %}"
-                               data-hx-target="closest tr"
-                               data-hx-swap="outerHTML swap:1s"
-                               data-hx-confirm="Are you sure you want to delete this contact?"
-                               data-hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
-                                Delete
-                            </a>
+                            <div data-overflow-menu>
+                                <button type="button" aria-haspopup="menu"
+                                        aria-controls="contact-menu-{{ contact.id }}">
+                                    Options
+                                </button>
+                                <div role="menu" hidden id="contact-menu-{{ contact.id }}">
+                                    <a role="menuitem" href="/contact/{{ contact.id }}/edit">Edit</a>
+                                    <a role="menuitem" href="{% url 'contact:show-delete' contact.id %}">View</a>
+                                    <a role="menuitem" href="#"
+                                       data-hx-delete="{% url 'contact:show-delete' contact.id %}"
+                                       data-hx-target="closest tr"
+                                       data-hx-swap="outerHTML swap:1s"
+                                       data-hx-confirm="Are you sure you want to delete this contact?"
+                                       data-hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+                                        Delete
+                                    </a>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                 {% endfor %}
