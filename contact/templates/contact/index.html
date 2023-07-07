@@ -12,7 +12,8 @@
                data-hx-trigger="search, keyup delay:200ms changed"
                data-hx-target="tbody"
                data-hx-push-url="true"
-               data-hx-indicator="#search-indicator"/>
+               data-hx-indicator="#search-indicator"
+               data-script="on keydown[altKey and code is 'KeyS'] from the window me.focus()"/>
         <input type="submit" value="Search"/>
     </form>
     <span id="search-indicator" class="htmx-indicator">Searching...</span>
