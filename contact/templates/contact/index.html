@@ -3,6 +3,8 @@
 
 {% block script %}
     <script src="{% static 'contact/js/overflow_menu.js' %}"></script>
+    <script src="{% static 'contact/js/alert.js' %}"></script>
+
 {% endblock %}
 
 {% block content %}
@@ -24,9 +26,18 @@
                 <slot x-text="selected.length"></slot>
                 contacts selected
 
+                {# TODO: understand why the event version doesn't work #}
+                {% comment %}<button id="bulk-delete" type="button" class="bad bg color border"
+                        data-hx-delete="{% url 'contact:index' %}" data-hx-target="body"
+                        data-hx-trigger="sweet:confirmed"
+                        @click="sweetConfirm($el,
+                { title: 'Delete these contacts?',
+                  showCancelButton: true,
+                  confirmButtonText: 'Delete'})">
+                    Delete
+                </button>{% endcomment %}
                 <button type="button" class="bad bg color border"
-                        @click="confirm(`Delete ${selected.length} contacts?`) &&
-                        htmx.ajax('DELETE', '/contacts/', { source: $root, target: document.body })">
+                        @click="fireModal($root)">
                     Delete
                 </button>
                 <hr aria-orientation="vertical">

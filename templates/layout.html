@@ -9,6 +9,7 @@
     <script src="{% static 'js/htmx.min.js' %}" defer></script>
     <script src="{% static 'js/alpine.js' %}" defer></script>
     <script src="{% static 'js/hyperscript.js' %}" defer></script>
+    <script src="{% static 'js/sweetalert2.js' %}" defer></script>
     {% block script %}{% endblock %}
 </head>
 <body data-hx-boost="true" data-hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
