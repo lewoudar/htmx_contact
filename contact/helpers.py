@@ -80,5 +80,4 @@ def get_archiver() -> Archiver:
     global _instance
     if _instance is None:
         _instance = Archiver()
-        return _instance
     return _instance
