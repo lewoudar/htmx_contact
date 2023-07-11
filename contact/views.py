@@ -25,11 +25,11 @@ class HtmxHttpRequest(HttpRequest):
 
 
 def partial_render(
-        template_name: str,
-        block_name: str,
-        context: dict | None = None,
-        request: HtmxHttpRequest | None = None,
-        status: int = 200,
+    template_name: str,
+    block_name: str,
+    context: dict | None = None,
+    request: HtmxHttpRequest | None = None,
+    status: int = 200,
 ) -> HttpResponse:
     data = render_block_to_string(template_name, block_name, context, request)
     return HttpResponse(data, status=status)
@@ -145,7 +145,6 @@ def check_email(request):
 
 
 class ContactArchive(View):
-
     @staticmethod
     def get(request):
         return render(request, 'contact/archive_ui.html', {'archiver': get_archiver()})
@@ -169,5 +168,5 @@ def get_archive_file(request):
         archiver.archive_file.open(mode='rb'),
         filename=archiver.archive_file.name,
         as_attachment=True,
-        content_type='text/csv'
+        content_type='text/csv',
     )

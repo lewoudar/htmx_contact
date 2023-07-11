@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django_htmx',
     'django_extensions',
     'contact.apps.ContactConfig',
+    'ninja_extra',
 ]
 
 MIDDLEWARE = [

@@ -18,11 +18,13 @@ from django.contrib import admin
 from django.urls import include, path
 
 from . import views
+from .api import api
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('contacts/', include('contact.urls')),
     path('', views.home),
+    path('api/v1/', api.urls),
 ]
 
 handler404 = 'htmx_contact.views.page_not_found'
