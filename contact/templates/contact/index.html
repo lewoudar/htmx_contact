@@ -75,7 +75,7 @@
                                     Options
                                 </button>
                                 <div role="menu" hidden id="contact-menu-{{ contact.id }}">
-                                    <a role="menuitem" href="/contact/{{ contact.id }}/edit">Edit</a>
+                                    <a role="menuitem" href="{% url 'contact:edit' contact.id %}">Edit</a>
                                     <a role="menuitem" href="{% url 'contact:show-delete' contact.id %}">View</a>
                                     <a role="menuitem" href="#"
                                        data-hx-delete="{% url 'contact:show-delete' contact.id %}"
